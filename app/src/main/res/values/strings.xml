@@ -2,4 +2,6 @@
     <string name="app_name">MyRealTrip_RssApp</string>
     <string name="splash_text">최신 뉴스를 제공합니다.\n뉴스의 키워드를 알아보세요.</string>
     <string name="version_name">v1.0</string>
+
+    <string name="baseUrl">https://news.google.com/</string>
 </resources>
