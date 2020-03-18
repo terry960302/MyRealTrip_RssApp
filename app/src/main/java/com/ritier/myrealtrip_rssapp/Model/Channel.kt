@@ -4,26 +4,43 @@ import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 
-@Element(name = "channel")
+@Root(name = "channel")
 data class Channel(
-    @Element(name = "generator")
+    @field:Element(name = "generator")
+    @param:Element(name = "generator")
     val generator: String,
-    @Element(name = "title")
+
+    @field:Element(name = "title")
+    @param:Element(name = "title")
     val title: String,
-    @Element(name = "link")
+
+    @field:Element(name = "link")
+    @param:Element(name = "link")
     val link: String,
-    @Element(name = "language")
+
+    @field:Element(name = "language")
+    @param:Element(name = "language")
     val language: String,
-    @Element(name = "webMaster")
+
+    @field:Element(name = "webMaster")
+    @param:Element(name = "webMaster")
     val webMaster: String,
-    @Element(name = "copyright")
+
+    @field:Element(name = "copyright")
+    @param:Element(name = "copyright")
     val copyright: String,
-    @Element(name = "lastBuildDate")
+
+    @field:Element(name = "lastBuildDate")
+    @param:Element(name = "lastBuildDate")
     val lastBuildDate: String,
-    @Element(name = "description")
+
+    @field:Element(name = "description")
+    @param:Element(name = "description")
     val description: String,
-    @ElementList
-    val news: List<NewsItem>
+
+    @field:ElementList(name= "item", inline = true)
+    @param:ElementList(name= "item", inline = true)
+    val newsItems: List<NewsItem>
 ) {
     constructor() : this("", "", "", "", "", "", "", "", listOf())
 }

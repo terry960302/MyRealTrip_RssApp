@@ -1,21 +1,33 @@
 package com.ritier.myrealtrip_rssapp.Model
 
 import org.simpleframework.xml.Element
+import org.simpleframework.xml.Root
 
-@Element(name = "item")
+@Root(name = "item")
 data class NewsItem(
-    @Element(name = "title")
+    @field:Element(name = "title")
+    @param:Element(name = "title")
     val title: String,
-    @Element(name = "link")
+
+    @field:Element(name = "link")
+    @param:Element(name = "link")
     val link: String,
-    @Element(name = "guid")
+
+    @field:Element(name = "guid")
+    @param:Element(name = "guid")
     val id: String,
-    @Element(name = "pubDate")
+
+    @field:Element(name = "pubDate")
+    @param:Element(name = "pubDate")
     val date: String,
-    @Element(name = "description")
+
+    @field:Element(name = "description")
+    @param:Element(name = "description")
     val desc: String,
-    @Element(name = "source")
-    val srcUrl: String
+
+    @field:Element(name = "source")
+    @param:Element(name = "source")
+    val src: String
 ) {
     constructor() : this("", "", "", "", "", "")
 

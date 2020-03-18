@@ -1,29 +1,41 @@
 package com.ritier.myrealtrip_rssapp.Api
 
-import com.ritier.myrealtrip_rssapp.Model.NewsItem
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import com.ritier.myrealtrip_rssapp.Model.Rss
 import org.junit.Before
 import org.junit.Test
+import retrofit2.Call
+import retrofit2.Response
 
 class NewsApiTest {
 
-    lateinit var observable : Observable<List<NewsItem>>
+    lateinit var api : Call<Rss>
+    val tag = "api_test"
 
     @Before
     fun setting(){
-        observable = NewsApi.getApi().getNewsItems()
+        api = NewsApi.getApi().getNewsItems()
     }
 
     @Test
     fun getItems(){
-        observable.apply {
-            this.observeOn(Schedulers.io())
-            this.subscribeOn(AndroidSchedulers.mainThread())
-            this.subscribe {
-                    items -> print(items.toString())
+
+        api.enqueue(object: retrofit2.Callback<Rss>{
+            override fun onFailure(call: Call<Rss>, t: Throwable) {
+                print("에러입니다. : ${t.message}")
             }
-        }
+
+            override fun onResponse(call: Call<Rss>, response: Response<Rss>) {
+                val body = response.body()
+
+                if(body != null){
+                    val channel = body.channel
+                    if(channel != null){
+                        println("결과 : ${channel.newsItems}")
+                    }
+                }
+
+            }
+
+        })
     }
 }
