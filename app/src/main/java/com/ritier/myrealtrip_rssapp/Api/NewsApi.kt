@@ -12,11 +12,13 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
 class NewsApi {
     companion object{
-        fun getApi(context: Context): NewsApiService {
+
+        private const val baseUrl = "https://news.google.com/"
+        fun getApi(): NewsApiService {
             val client =
                 OkHttpClient.Builder().build()
 
-            return Retrofit.Builder().baseUrl(context.getString(R.string.baseUrl)).client(client)
+            return Retrofit.Builder().baseUrl(baseUrl).client(client)
                 .addConverterFactory(
                     SimpleXmlConverterFactory.createNonStrict(
                         Persister(AnnotationStrategy())

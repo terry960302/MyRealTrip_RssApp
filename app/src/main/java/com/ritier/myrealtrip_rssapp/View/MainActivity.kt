@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         mainText = findViewById(R.id.tv_main)
 
-        val observable = NewsApi.getApi(this).getNewsItems()
+        val observable = NewsApi.getApi().getNewsItems()
 
         observable.apply {
             this.subscribeOn(Schedulers.io())
