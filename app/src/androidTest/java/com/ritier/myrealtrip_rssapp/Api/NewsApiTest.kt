@@ -6,14 +6,13 @@ import org.junit.Test
 import retrofit2.Call
 import retrofit2.Response
 
-class NewsApiTest {
+class NewsApiTest  {
 
-    lateinit var api : Call<Rss>
-    val tag = "api_test"
+    private lateinit var api : Call<Rss>
 
     @Before
     fun setting(){
-        api = NewsApi.getApi().getNewsItems()
+        api = NewsClient.getInstance().getNewsItems()
     }
 
     @Test

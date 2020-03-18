@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -39,26 +40,30 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.cardview:cardview:1.0.0'
 
+    //ViewModel
+    def lifecycle_version = "2.0.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
     //Data binding
     kapt "com.android.databinding:compiler:5.6.4"
-
-    //Reactive => https://github.com/ReactiveX/RxAndroid
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
 
     //Retrofit => https://square.github.io/retrofit/
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-    implementation ("com.squareup.retrofit2:converter-simplexml:2.5.0"){
+    implementation("com.squareup.retrofit2:converter-simplexml:2.5.0") {
         exclude group: 'xpp3', module: 'xpp3'
         exclude group: 'stax', module: 'stax-api'
         exclude group: 'stax', module: 'stax'
     }
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 
-//    //Dependency Injection Dagger => https://github.com/google/dagger
-//    api 'com.google.dagger:dagger-android:2.15'
-//    api 'com.google.dagger:dagger-android-support:2.15' // if you use the support libraries
-//    annotationProcessor 'com.google.dagger:dagger-android-processor:2.x'
+    //koin => https://github.com/InsertKoinIO/koin
+    implementation "org.koin:koin-core:$koin_version"
+    implementation "org.koin:koin-core-ext:$koin_version"
+    testImplementation "org.koin:koin-test:$koin_version"
+    implementation "org.koin:koin-androidx-scope:$koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    implementation "org.koin:koin-androidx-fragment:$koin_version"
+    implementation "org.koin:koin-androidx-ext:$koin_version"
 
 }
