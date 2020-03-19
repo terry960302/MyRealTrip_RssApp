@@ -39,6 +39,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
     //ViewModel
     def lifecycle_version = "2.0.0"
@@ -57,7 +58,7 @@ dependencies {
         exclude group: 'stax', module: 'stax'
     }
 
-    //koin => https://github.com/InsertKoinIO/koin
+    //Koin => https://github.com/InsertKoinIO/koin
     implementation "org.koin:koin-core:$koin_version"
     implementation "org.koin:koin-core-ext:$koin_version"
     testImplementation "org.koin:koin-test:$koin_version"
@@ -66,4 +67,13 @@ dependencies {
     implementation "org.koin:koin-androidx-fragment:$koin_version"
     implementation "org.koin:koin-androidx-ext:$koin_version"
 
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    //Jsoup => https://jsoup.org/download
+    implementation 'org.jsoup:jsoup:1.13.1'
+
+    //Kotlin Anko
+    implementation "org.jetbrains.anko:anko:$anko_version"
 }

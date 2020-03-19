@@ -1,4 +1,4 @@
-package com.ritier.myrealtrip_rssapp.Model
+package com.ritier.myrealtrip_rssapp.model
 
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root

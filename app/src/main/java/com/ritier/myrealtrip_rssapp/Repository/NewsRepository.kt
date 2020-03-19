@@ -2,8 +2,8 @@ package com.ritier.myrealtrip_rssapp.Repository
 
 import android.util.Log
 import com.ritier.myrealtrip_rssapp.Api.NewsApi
-import com.ritier.myrealtrip_rssapp.Model.NewsItem
-import com.ritier.myrealtrip_rssapp.Model.Rss
+import com.ritier.myrealtrip_rssapp.model.NewsItem
+import com.ritier.myrealtrip_rssapp.model.Rss
 import retrofit2.Call
 import retrofit2.Response
 

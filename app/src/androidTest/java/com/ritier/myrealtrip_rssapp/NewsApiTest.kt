@@ -1,6 +1,8 @@
-package com.ritier.myrealtrip_rssapp.Api
+package com.ritier.myrealtrip_rssapp
 
-import com.ritier.myrealtrip_rssapp.Model.Rss
+import androidx.test.platform.app.InstrumentationRegistry
+import com.ritier.myrealtrip_rssapp.Api.NewsClient
+import com.ritier.myrealtrip_rssapp.model.Rss
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Call
@@ -9,10 +11,13 @@ import retrofit2.Response
 class NewsApiTest  {
 
     private lateinit var api : Call<Rss>
+    private val mockContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Before
     fun setting(){
-        api = NewsClient.getInstance().getNewsItems()
+        api = NewsClient.getInstance(
+            mockContext
+        ).getNewsItems()
     }
 
     @Test
