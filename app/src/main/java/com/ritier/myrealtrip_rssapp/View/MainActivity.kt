@@ -62,10 +62,10 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Rss>, response: Response<Rss>) {
                 val itemList= response.body()?.channel?.newsItems
 
+                //비동기 함수를 실행할 때는 다시 코루틴으로 감싸줌.
                 val mainScope = CoroutineScope(Dispatchers.Main + Job())
-
                 mainScope.launch {
-                    var items:List<NewsListItem>? = listOf<NewsListItem>()
+                    var items:List<NewsListItem>? = listOf()
                     withContext(CoroutineScope(Dispatchers.Default).coroutineContext) {
                         items = itemList?.map { items -> Utils.resBodyToModel(items) }
                     }

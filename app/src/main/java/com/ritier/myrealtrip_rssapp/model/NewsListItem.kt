@@ -7,4 +7,8 @@ data class NewsListItem(
     val keywords: MutableList<String>
 ) {
     constructor() : this("", "", "", mutableListOf())
+
+    fun setOnClickListener(){
+
+    }
 }
