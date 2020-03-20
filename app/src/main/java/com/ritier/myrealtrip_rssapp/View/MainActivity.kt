@@ -8,15 +8,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ritier.myrealtrip_rssapp.Api.NewsApi
-import com.ritier.myrealtrip_rssapp.model.Rss
 import com.ritier.myrealtrip_rssapp.R
 import com.ritier.myrealtrip_rssapp.Util.Utils
 import com.ritier.myrealtrip_rssapp.View.Adapter.NewsAdapter
 import com.ritier.myrealtrip_rssapp.databinding.ActivityMainBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.ritier.myrealtrip_rssapp.model.NewsListItem
+import com.ritier.myrealtrip_rssapp.model.Rss
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.get
 import retrofit2.Call
 import retrofit2.Response
@@ -36,25 +34,13 @@ class MainActivity : AppCompatActivity() {
 
         binding.pgLoading.visibility = View.VISIBLE
 
-        val newsApi : NewsApi = get()
-
-        newsApi.getNewsItems().enqueue(object :  retrofit2.Callback<Rss> {
-            override fun onFailure(call: Call<Rss>, t: Throwable) {
-                Log.e(tag, "에러 : ${t.message}")
-            }
-
-            override fun onResponse(call: Call<Rss>, response: Response<Rss>) {
-                val itemList= response.body()?.channel?.newsItems
-                val mainScope = CoroutineScope(Dispatchers.Main + Job())
-
-                mainScope.launch {
-                    val items = itemList?.map { items ->  Utils.resBodyToModel(items)}
-                    newsAdapter.setItems(items!!)
-                    binding.pgLoading.visibility = View.INVISIBLE
-                }
-
-            }
-        })
+        binding.srlMain.setOnRefreshListener {
+            binding.pgLoading.visibility = View.VISIBLE
+            newsAdapter.clearItems()
+            getData()
+            binding.srlMain.isRefreshing = false
+        }
+        getData()
     }
 
     private fun initRecyclerView(){
@@ -64,4 +50,32 @@ class MainActivity : AppCompatActivity() {
             this.adapter = newsAdapter
         }
     }
+
+    private fun getData(){
+        val newsApi : NewsApi = get()
+
+        newsApi.getNewsItems().enqueue(object :  retrofit2.Callback<Rss> {
+            override fun onFailure(call: Call<Rss>, t: Throwable) {
+                Log.e(tag, "에러 : ${t.message}")
+            }
+
+            override fun onResponse(call: Call<Rss>, response: Response<Rss>) {
+                val itemList= response.body()?.channel?.newsItems
+
+                val mainScope = CoroutineScope(Dispatchers.Main + Job())
+
+                mainScope.launch {
+                    var items:List<NewsListItem>? = listOf<NewsListItem>()
+                    withContext(CoroutineScope(Dispatchers.Default).coroutineContext) {
+                        items = itemList?.map { items -> Utils.resBodyToModel(items) }
+                    }
+                    newsAdapter.setItems(items!!)
+                    binding.pgLoading.visibility = View.INVISIBLE
+
+                }
+
+            }
+        })
+    }
+
 }

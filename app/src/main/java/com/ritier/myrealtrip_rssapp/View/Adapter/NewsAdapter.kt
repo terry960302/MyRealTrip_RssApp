@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ritier.myrealtrip_rssapp.R
+import com.ritier.myrealtrip_rssapp.Util.Utils
 import com.ritier.myrealtrip_rssapp.databinding.ActivityMainItemBinding
 import com.ritier.myrealtrip_rssapp.model.NewsListItem
 
@@ -20,7 +21,8 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     companion object{
         @JvmStatic
         @BindingAdapter("imageUrl")
-        fun loadImage(view: ImageView, url: String) = Glide.with(view.context).load(url).into(view)
+        fun loadImage(view: ImageView, url: String) = Glide.with(view.context).load(url).placeholder(
+            Utils.GlidePlaceHolder.circularPlaceHolder(view.context)).error(R.drawable.ic_file).into(view)
     }
 
     inner class NewsViewHolder(private val binding: ActivityMainItemBinding) :
@@ -52,6 +54,11 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
     fun setItems(itemList: List<NewsListItem>) {
         items = itemList
+        notifyDataSetChanged()
+    }
+
+    fun clearItems(){
+        items = listOf<NewsListItem>()
         notifyDataSetChanged()
     }
 }

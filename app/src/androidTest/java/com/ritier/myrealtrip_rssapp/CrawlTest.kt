@@ -21,7 +21,7 @@ class CrawlTest {
 
         val doc = Jsoup.connect(url).get()
         val imagePath = doc.select("meta[property=og:image]").attr("content")
-        val allDesc = doc.select("div.text").text()
+        val allDesc = doc.select("meta[property=og:description]").attr("content")
 
         assertEquals(
             "http://flexible.img.hani.co.kr/flexible/normal/970/610/imgdb/original/2020/0319/20200319504139.jpg",
