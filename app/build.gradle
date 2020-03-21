@@ -41,10 +41,14 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
-    //ViewModel
-    def lifecycle_version = "2.0.0"
+    //JetPack
+    def lifecycle_version = "2.2.0"
+    def arch_version = "2.1.0"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+
 
     //Data binding
     kapt "com.android.databinding:compiler:5.6.4"

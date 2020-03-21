@@ -18,6 +18,7 @@ import kotlinx.coroutines.*
 import org.koin.android.ext.android.get
 import retrofit2.Call
 import retrofit2.Response
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         initRecyclerView()
+        getData()
 
         binding.pgLoading.visibility = View.VISIBLE
 
@@ -38,9 +40,7 @@ class MainActivity : AppCompatActivity() {
             binding.pgLoading.visibility = View.VISIBLE
             newsAdapter.clearItems()
             getData()
-            binding.srlMain.isRefreshing = false
         }
-        getData()
     }
 
     private fun initRecyclerView(){
@@ -65,12 +65,20 @@ class MainActivity : AppCompatActivity() {
                 //비동기 함수를 실행할 때는 다시 코루틴으로 감싸줌.
                 val mainScope = CoroutineScope(Dispatchers.Main + Job())
                 mainScope.launch {
-                    var items:List<NewsListItem>? = listOf()
-                    withContext(CoroutineScope(Dispatchers.Default).coroutineContext) {
-                        items = itemList?.map { items -> Utils.resBodyToModel(items) }
+                    try{
+                        var items:List<NewsListItem>? = listOf()
+                        withContext(CoroutineScope(Dispatchers.Default).coroutineContext) {
+                            items = itemList?.map { items -> Utils.resBodyToModel(items) }
+                        }
+                        newsAdapter.setItems(items!!)
+                        binding.pgLoading.visibility = View.INVISIBLE
+                        binding.srlMain.isRefreshing = false
+                    }catch (e : IOException){
+                        Log.e(tag, e.message.toString())
+                        binding.pgLoading.visibility = View.INVISIBLE
+                        binding.srlMain.isRefreshing = false
+
                     }
-                    newsAdapter.setItems(items!!)
-                    binding.pgLoading.visibility = View.INVISIBLE
 
                 }
 
