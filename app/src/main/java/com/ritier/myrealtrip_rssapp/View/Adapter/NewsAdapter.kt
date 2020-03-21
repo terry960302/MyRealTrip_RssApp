@@ -16,7 +16,7 @@ import com.ritier.myrealtrip_rssapp.model.NewsListItem
 //https://codechacha.com/ko/android-jetpack-databinding/
 class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
-    private var items = listOf<NewsListItem>()
+    private var items = mutableListOf<NewsListItem>()
 
     companion object{
         @JvmStatic
@@ -51,13 +51,18 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) =
         holder.bind(items[position])
 
-    fun setItems(itemList: List<NewsListItem>) {
+    fun setItems(itemList: MutableList<NewsListItem>) {
         items = itemList
         notifyDataSetChanged()
     }
 
     fun clearItems(){
-        items = listOf<NewsListItem>()
+        items.clear()
         notifyDataSetChanged()
+    }
+
+    fun addItem(newsListItem: NewsListItem){
+        items.add(newsListItem)
+        notifyItemChanged(items.size-1)
     }
 }

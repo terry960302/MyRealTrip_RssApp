@@ -12,15 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".View.DetailActivity">
-
-        <TextView
-            android:id="@+id/tv_center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="상세보기"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <WebView
+            android:id="@+id/wv_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

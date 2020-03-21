@@ -8,10 +8,6 @@ import kotlinx.coroutines.launch
 
 class NewsViewModel(private val newsRepo : NewsRepository) : ViewModel() {
 
-    init {
-
-    }
-
     //https://developer.android.com/topic/libraries/architecture/coroutines
     fun getNewsItems(newsRepo: NewsRepository){
         viewModelScope.launch {
