@@ -4,7 +4,7 @@ import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class keywordFetchTest {
+class KeywordFetchTest {
 
     private lateinit var list  : List<String>
 

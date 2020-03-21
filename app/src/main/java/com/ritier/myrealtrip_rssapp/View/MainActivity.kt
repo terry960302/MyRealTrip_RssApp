@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity() {
             binding.pgLoading.visibility = View.VISIBLE
             newsAdapter.clearItems()
             getData()
-            binding.srlMain.isRefreshing = false
         }
         getData()
     }
@@ -71,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     newsAdapter.setItems(items!!)
                     binding.pgLoading.visibility = View.INVISIBLE
-
+                    binding.srlMain.isRefreshing = false
                 }
 
             }

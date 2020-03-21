@@ -29,44 +29,6 @@ class Utils {
             return isConnected
         }
 
-        //        //비동기 함수
-//        suspend fun resBodyToModel(newsItem: NewsItem): NewsListItem = withContext(Dispatchers.IO) {
-//            //TODO : 네트워크 불안정함. 에러 핸들링 필요 + 속도 저하 너무 심함
-//            var doc: Document? = null
-//            try {
-//                doc = Jsoup.connect(newsItem.link).method(Connection.Method.GET).get()
-//            } catch (e: IOException) {
-//                Log.e("Util.resBodyToModel", "에러 : ${e.message}")
-//            }
-//
-//            if (doc != null) {
-//                val imagePath = doc.select("meta[property=og:image]").attr("content")
-//                val allDesc = doc.select("meta[property=og:description]").attr("content")
-//
-//                val keywordMap = hashMapOf<String, Int>()
-//                val descList = allDesc.split(" ")
-//                descList.forEach {
-//                    val keyword = it.trim()
-//                    if (keyword in keywordMap) {
-//                        val value = keywordMap[keyword]!! + 1
-//                        keywordMap[keyword] = value
-//                    } else {
-//                        keywordMap[keyword] = 1
-//                    }
-//                }
-//                val keywordList = if (keywordMap.keys.size >= 3) {
-//                    keywordMap.toSortedMap(compareBy { it }).keys.toMutableList().subList(0, 3)
-//                } else {
-//                    keywordMap.toSortedMap(compareBy { it }).keys.toMutableList()
-//                }
-//
-//                return@withContext NewsListItem(imagePath, newsItem.title, allDesc, keywordList)
-//            } else {
-//                return@withContext NewsListItem("", "", "", mutableListOf())
-//            }
-//
-//        }
-
         //https://sourcediving.com/kotlin-coroutines-in-android-e2d5bb02c275
         suspend fun resBodyToModel(newsItem: NewsItem): NewsListItem {
             //TODO : 네트워크 불안정함. 에러 핸들링 필요 + 속도 저하 너무 심함
