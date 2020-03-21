@@ -19,6 +19,7 @@ import kotlin.coroutines.suspendCoroutine
 class Utils {
 
     companion object {
+        //TODO : splash_Screen에서 미리 네트워크 검사하는거 필요
         fun hasNetwork(context: Context): Boolean {
             var isConnected = false
             val connectivityManager =
@@ -31,11 +32,12 @@ class Utils {
 
         //https://sourcediving.com/kotlin-coroutines-in-android-e2d5bb02c275
         suspend fun resBodyToModel(newsItem: NewsItem): NewsListItem {
-            //TODO : 네트워크 불안정함. 에러 핸들링 필요 + 속도 저하 너무 심함
+            // TODO : 네트워크 불안정함. 에러 핸들링 필요 + 속도 저하 너무 심함
+            // 시간 체크 결과 => 13~23초(네트워크 상황에 따라 상이) / rss 부르는거 1~2초 감안해도 많이 느림, 개선 필요
             return suspendCoroutine { continuation ->
                 var doc: Document? = null
                 try {
-                    doc = Jsoup.connect(newsItem.link).maxBodySize(0).get()
+                    doc = Jsoup.connect(newsItem.link).maxBodySize(0).get() ?: throw error("http fetching error")
                 } catch (e: IOException) {
                     Log.e("Util.resBodyToModel", "에러 : ${e.message}")
                     e.printStackTrace()
@@ -50,11 +52,14 @@ class Utils {
                     val descList = allDesc.split(" ")
                     descList.forEach {
                         val keyword = it.trim()
-                        if (keyword in keywordMap) {
-                            val value = keywordMap[keyword]!! + 1
-                            keywordMap[keyword] = value
-                        } else {
-                            keywordMap[keyword] = 1
+                        if(keyword.contains("\""))
+                        if(!keyword.isBlank()){
+                            if (keyword in keywordMap) {
+                                val value = keywordMap[keyword]!! + 1
+                                keywordMap[keyword] = value
+                            } else {
+                                keywordMap[keyword] = 1
+                            }
                         }
                     }
                     val keywordList = if (keywordMap.keys.size >= 3) {
@@ -67,6 +72,7 @@ class Utils {
                         NewsListItem(
                             imagePath,
                             newsItem.title,
+                            newsItem.link,
                             allDesc,
                             keywordList
                         )
