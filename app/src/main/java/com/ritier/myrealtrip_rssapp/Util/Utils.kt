@@ -9,6 +9,8 @@ import android.util.Log
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.ritier.myrealtrip_rssapp.model.NewsItem
 import com.ritier.myrealtrip_rssapp.model.NewsListItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -28,33 +30,52 @@ class Utils {
         }
 
         //https://sourcediving.com/kotlin-coroutines-in-android-e2d5bb02c275
-        suspend fun resBodyToModel(newsItem: NewsItem, onComplete: (NewsListItem) -> Unit) {
-            // TODO : 네트워크 불안정함. 에러 핸들링 필요 + 속도 저하 너무 심함(Jsoup이 Blocking하므로 비동기로 작동필요)
-            return suspendCoroutine { continuation ->
-                try {
-                    val doc = Jsoup.connect(newsItem.link).ignoreHttpErrors(true)
-                        .execute().header("Connection", "close")
-                        .parse()
-                    val imagePath = doc.select("meta[property=og:image]").attr("content")
-                    val allDesc = doc.select("meta[property=og:description]").attr("content")
-                    val keywordList = extractKeywords(allDesc)
+        suspend fun resBodyToModel(newsItem: NewsItem, onComplete: (NewsListItem) -> Unit)  = withContext(Dispatchers.IO){
+            try {
+                val doc = Jsoup.connect(newsItem.link).ignoreHttpErrors(true)
+                    .execute().header("Connection", "close")
+                    .parse()
+                val imagePath = doc.select("meta[property=og:image]").attr("content")
+                val allDesc = doc.select("meta[property=og:description]").attr("content")
+                val keywordList = extractKeywords(allDesc)
 
-                    continuation.resume(
-                        onComplete(
-                            NewsListItem(
-                                imagePath,
-                                newsItem.title,
-                                newsItem.link,
-                                allDesc,
-                                keywordList
-                            )
-                        )
+                return@withContext onComplete(
+                    NewsListItem(
+                        if (imagePath.trim().isNotEmpty()) imagePath else null,
+                        newsItem.title,
+                        newsItem.link,
+                        if (allDesc.trim().isNotEmpty()) allDesc else "원문을 확인해주십시오.",
+                        keywordList
                     )
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    continuation.resumeWithException(e)
-                }
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
+//            return suspendCoroutine { continuation ->
+//                try {
+//                    val doc = Jsoup.connect(newsItem.link).ignoreHttpErrors(true)
+//                        .execute().header("Connection", "close")
+//                        .parse()
+//                    val imagePath = doc.select("meta[property=og:image]").attr("content")
+//                    val allDesc = doc.select("meta[property=og:description]").attr("content")
+//                    val keywordList = extractKeywords(allDesc)
+//
+//                    continuation.resume(
+//                        onComplete(
+//                            NewsListItem(
+//                                if (imagePath.trim().isNotEmpty()) imagePath else null,
+//                                newsItem.title,
+//                                newsItem.link,
+//                                if (allDesc.trim().isNotEmpty()) allDesc else "원문을 확인해주십시오.",
+//                                keywordList
+//                            )
+//                        )
+//                    )
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                    continuation.resumeWithException(e)
+//                }
+//            }
         }
 
         private fun stringSort(word: String): String? {

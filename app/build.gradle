@@ -41,6 +41,9 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
+    //Mockito
+    testImplementation 'org.mockito:mockito-core:2.22.0'
+
     //JetPack
     def lifecycle_version = "2.2.0"
     def arch_version = "2.1.0"
@@ -48,6 +51,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle_version"
+
 
     //Data binding
     kapt "com.android.databinding:compiler:5.6.4"

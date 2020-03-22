@@ -1,7 +1,6 @@
 package com.ritier.myrealtrip_rssapp
 
 import junit.framework.TestCase.assertEquals
-import org.jetbrains.anko.doAsync
 import org.jsoup.Jsoup
 import org.junit.Before
 import org.junit.Test

@@ -40,7 +40,7 @@ data class Channel(
 
     @field:ElementList(name= "item", inline = true)
     @param:ElementList(name= "item", inline = true)
-    val newsItems: List<NewsItem>
+    val newsItems: MutableList<NewsItem>
 ) {
-    constructor() : this("", "", "", "", "", "", "", "", listOf())
+    constructor() : this("", "", "", "", "", "", "", "", mutableListOf())
 }

@@ -21,8 +21,14 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     companion object{
         @JvmStatic
         @BindingAdapter("imageUrl")
-        fun loadImage(view: ImageView, url: String) = Glide.with(view.context).load(url).placeholder(
-            Utils.GlidePlaceHolder.circularPlaceHolder(view.context)).error(R.drawable.ic_file).into(view)
+        fun loadImage(view: ImageView, url: String?) {
+            if(url == null){
+                Glide.with(view.context).load(R.drawable.no_image).into(view)
+            }else{
+                Glide.with(view.context).load(url).placeholder(
+                    Utils.GlidePlaceHolder.circularPlaceHolder(view.context)).error(R.drawable.ic_file).into(view)
+            }
+        }
     }
 
     inner class NewsViewHolder(private val binding: ActivityMainItemBinding) :
@@ -51,13 +57,13 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) =
         holder.bind(items[position])
 
-    fun setItems(itemList: MutableList<NewsListItem>) {
-        items = itemList
+    fun clearItems(){
+        items.clear()
         notifyDataSetChanged()
     }
 
-    fun clearItems(){
-        items.clear()
+    fun setItems(itemList : MutableList<NewsListItem>){
+        items = itemList
         notifyDataSetChanged()
     }
 
