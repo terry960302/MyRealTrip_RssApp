@@ -8,36 +8,38 @@ import com.ritier.myrealtrip_rssapp.model.Rss
 import retrofit2.Call
 import retrofit2.Response
 
-class NewsRepository(private val newsApi: NewsApi) {
+class NewsRepository(newsApi: NewsApi) {
 
     val tag = "NewsRepository"
-
-    init {
-        getNewsItems()
-    }
+    private val apiCall by lazy { newsApi.getNewsItems() }
 
     fun getNewsItems(): MutableLiveData<MutableList<NewsItem>> {
-        val liveData: MutableLiveData<MutableList<NewsItem>> = MutableLiveData()
 
-        newsApi.getNewsItems().enqueue(object : retrofit2.Callback<Rss> {
+        Log.d(tag, "레포 함수 실행")
+
+        val result = MutableLiveData<MutableList<NewsItem>>()
+
+        apiCall.enqueue(object : retrofit2.Callback<Rss> {
 
             override fun onFailure(call: Call<Rss>, t: Throwable) {
                 Log.e(tag, "에러 : ${t.message}")
-                liveData.value = null
+                result.value = mutableListOf()
             }
 
             override fun onResponse(call: Call<Rss>, response: Response<Rss>) {
                 if(response.isSuccessful){
                     val itemList = response.body()?.channel?.newsItems
-                    liveData.value = itemList
-                    Log.d(tag, "데이터 성공 : ${liveData.value?.size}개")
+                    result.value = itemList
+                    Log.d(tag, "데이터 성공 : ${result.value?.size}개")
                 }
                 else{
-                    liveData.value = null
-                    Log.d(tag, "데이터 실패 : ${liveData.value}")
+                    result.value = mutableListOf()
+                    Log.d(tag, "데이터 실패 : ${result.value}")
                 }
             }
         })
-        return liveData
+        //TODO : onResponse 를 안거치고 너무 빨리 반환하는 문제(이 때문에 ViewModel에서 null값만 받음.)
+        Log.d(tag, "반환하기 전 레포 데이터 : ${result.value}")
+        return result
     }
 }

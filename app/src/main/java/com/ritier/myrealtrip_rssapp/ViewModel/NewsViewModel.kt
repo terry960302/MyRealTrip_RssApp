@@ -3,38 +3,54 @@ package com.ritier.myrealtrip_rssapp.ViewModel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ritier.myrealtrip_rssapp.Repository.NewsRepository
-import com.ritier.myrealtrip_rssapp.Util.Utils
+import com.ritier.myrealtrip_rssapp.Util.mappingModel
+import com.ritier.myrealtrip_rssapp.Util.notifyObserver
+import com.ritier.myrealtrip_rssapp.model.NewsItem
 import com.ritier.myrealtrip_rssapp.model.NewsListItem
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 
-class NewsViewModel(private var newsRepo: NewsRepository) : ViewModel() {
+class NewsViewModel(val newsRepo: NewsRepository) : ViewModel() {
 
-    private val viewModelJob = SupervisorJob()
     private val tag = "NewsViewModel"
+    private var repoLiveData: MutableLiveData<MutableList<NewsItem>>? = null
+
+    init {
+        viewModelScope.launch {
+            repoLiveData = newsRepo.getNewsItems()
+        }
+    }
 
     //https://developer.android.com/topic/libraries/architecture/coroutines
-    suspend fun getNewsItems(): MutableLiveData<MutableList<NewsListItem>> =
-        withContext(Dispatchers.IO + viewModelJob) {
+    fun getNewsItems(): MutableLiveData<MutableList<NewsListItem>>? {
+        Log.d(tag, "뷰모델 함수 실행")
 
-            var result = MutableLiveData<MutableList<NewsListItem>>()
+        Log.d(tag, "가져온 데이터 : ${repoLiveData?.value}")
 
-            val itemList = newsRepo.getNewsItems().value
-            Log.d(tag, "repo에서 가져온 데이터 : ${itemList?.size}개")
+        if (!repoLiveData?.value.isNullOrEmpty()) {
+            val result = MutableLiveData<MutableList<NewsListItem>>()
+            val emptyModel = NewsListItem(null, "", "", "", mutableListOf())
 
-            itemList?.forEach { newsItem ->
-                Utils.resBodyToModel(newsItem) {
-                    result.value?.add(it)
-                    Log.d("NewsViewModel", "어댑터에 붙음 : ${it.title}")
+            viewModelScope.launch {
+                val itemList = mutableListOf<NewsListItem>()
+                repoLiveData?.value?.forEach {
+                    if (mappingModel(it) == emptyModel) {
+                        return@forEach
+                    } else {
+                        itemList.add(mappingModel(it))
+                        result.value = itemList
+                        result.notifyObserver()
+                        Log.d(tag, "데이터 추가 성공: ${it.title}")
+                    }
                 }
             }
-            return@withContext result
+            return result
+        } else {
+            Log.d(tag, "빈값만 받아서 반환합니다.")
+            return null
         }
-
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
     }
+
+
 }

@@ -8,4 +8,7 @@
     <color name="grey">#95a5a6</color>
     <color name="black">#000</color>
     <color name="white">#fff</color>
+
+    <color name="blue_night">#353b48</color>
+
 </resources>
