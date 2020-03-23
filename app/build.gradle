@@ -67,6 +67,8 @@ dependencies {
         exclude group: 'stax', module: 'stax-api'
         exclude group: 'stax', module: 'stax'
     }
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
 
     //Koin => https://github.com/InsertKoinIO/koin
     implementation "org.koin:koin-core:$koin_version"
@@ -83,4 +85,9 @@ dependencies {
 
     //Jsoup => https://jsoup.org/download
     implementation 'org.jsoup:jsoup:1.13.1'
+
+    //Rxjava
+    implementation "io.reactivex.rxjava2:rxjava:2.2.0"
+    implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
+
 }

@@ -9,6 +9,7 @@ import okhttp3.OkHttpClient
 import org.simpleframework.xml.convert.AnnotationStrategy
 import org.simpleframework.xml.core.Persister
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
 class NewsClient {
@@ -51,6 +52,7 @@ class NewsClient {
                     .build()
 
             return Retrofit.Builder().baseUrl(baseUrl).client(okHttpClient)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(
                     SimpleXmlConverterFactory.createNonStrict(
                         Persister(AnnotationStrategy())

@@ -1,26 +1,20 @@
 package com.ritier.myrealtrip_rssapp.ViewModel
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.ritier.myrealtrip_rssapp.Repository.NewsRepository
 import com.ritier.myrealtrip_rssapp.Util.mappingModel
 import com.ritier.myrealtrip_rssapp.Util.notifyObserver
 import com.ritier.myrealtrip_rssapp.model.NewsItem
 import com.ritier.myrealtrip_rssapp.model.NewsListItem
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Observable
 import kotlinx.coroutines.launch
 
 class NewsViewModel(val newsRepo: NewsRepository) : ViewModel() {
 
     private val tag = "NewsViewModel"
-    private var repoLiveData: MutableLiveData<MutableList<NewsItem>>? = null
-
-    init {
-        viewModelScope.launch {
-            repoLiveData = newsRepo.getNewsItems()
-        }
-    }
+    private var repoLiveData: LiveData<MutableList<NewsItem>?> = newsRepo.getNewsItems()
 
     //https://developer.android.com/topic/libraries/architecture/coroutines
     fun getNewsItems(): MutableLiveData<MutableList<NewsListItem>>? {
@@ -50,7 +44,18 @@ class NewsViewModel(val newsRepo: NewsRepository) : ViewModel() {
             Log.d(tag, "빈값만 받아서 반환합니다.")
             return null
         }
-    }
+
+//    fun getNewsItems(): LiveData<MutableList<NewsListItem>>? =
+//        LiveDataReactiveStreams.fromPublisher(repoLiveData?.map { it ->
+//            it.map { item ->
+//                mappingModel(
+//                    item
+//                )
+//            }.toMutableList()
+//        }!!.toFlowable(BackpressureStrategy.LATEST))
+
+
+}
 
 
 }
