@@ -37,9 +37,6 @@ class MainActivity : AppCompatActivity() {
         initRecyclerView()
         setSwipeRefresh()
         getData()
-
-
-
     }
 
     private fun setSwipeRefresh() {
@@ -66,11 +63,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getData() {
-        dialog.show()
-        val job = Job()
-        val mainScope = CoroutineScope(Dispatchers.IO + job)
+
+        //TODO : 화면 회전시 다시 불러오는 문제 해결 필요
         newsViewModel.getNewsItems().observe(this, Observer {
-            mainScope.launch {
+            dialog.show()
+            val job = Job()
+            val coroutineScope = CoroutineScope(Dispatchers.IO + job)
+            coroutineScope.launch {
                 it?.forEach {
                     val item = mappingModel(it)
                     runOnUiThread {

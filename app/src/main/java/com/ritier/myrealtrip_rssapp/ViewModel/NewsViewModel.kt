@@ -41,7 +41,6 @@ class NewsViewModel(private val newsRepo: NewsRepository) : ViewModel() {
 //            return null
 //        }
 //    }
-
     fun getNewsItems(): LiveData<MutableList<NewsItem>?> = newsRepo.getNewsItems()
 
 
