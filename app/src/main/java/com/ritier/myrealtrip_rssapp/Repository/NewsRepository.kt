@@ -1,53 +1,61 @@
 package com.ritier.myrealtrip_rssapp.Repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.LiveDataReactiveStreams
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.ritier.myrealtrip_rssapp.Api.NewsApi
+import com.ritier.myrealtrip_rssapp.Util.mappingModel
 import com.ritier.myrealtrip_rssapp.model.NewsItem
-import io.reactivex.BackpressureStrategy
+import com.ritier.myrealtrip_rssapp.model.NewsListItem
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
+
 
 class NewsRepository(newsApi: NewsApi) {
 
     val tag = "NewsRepository"
-    private val apiObservable by lazy { newsApi.getNewsItems() }
-//    private val result by lazy { MutableLiveData<MutableList<NewsItem>>() }
+    private val newsItems by lazy { newsApi.getNewsItems() }
 
-    fun getNewsItems(): LiveData<MutableList<NewsItem>?> =
-        LiveDataReactiveStreams.fromPublisher(apiObservable.subscribeOn(Schedulers.io())
+    fun getNewsItems(): MutableLiveData<MutableList<NewsListItem>> {
+
+        val result = MutableLiveData<MutableList<NewsListItem>>()
+        val emptyErrorItem = NewsListItem(null, "오류입니다.", "", "", mutableListOf())
+
+        val observer: DisposableObserver<MutableList<NewsItem>> =
+            object : DisposableObserver<MutableList<NewsItem>>() {
+                override fun onComplete() {
+                    Log.d(tag, "뉴스 데이터 구독 완료")
+                }
+
+                override fun onNext(itemList: MutableList<NewsItem>) {
+                    val job = Job()
+                    val scope = CoroutineScope(Dispatchers.IO + job)
+                    scope.launch {
+                        kotlin.runCatching {
+                            result.postValue(itemList.map { item -> mappingModel(item) }
+                                .filter { item -> item != emptyErrorItem }
+                                .toMutableList())
+                        }.onSuccess {
+                            Log.d(tag, "코루틴 파싱 성공")
+                            job.cancelAndJoin()
+                        }.onFailure {
+                            Log.d(tag, "코루틴 파싱 실패 : ${it.message}")
+                            job.cancelAndJoin()
+                        }
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(tag, "뉴스 데이터 구독 실패 : ${e.message}")
+                }
+
+            }
+
+        val disposable = newsItems.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .map { item -> item.channel?.newsItems }.toFlowable(BackpressureStrategy.LATEST)
-        )
+            .map { item -> item.channel?.newsItems }.subscribeWith(observer)
 
-//    fun getNewsItems(): MutableLiveData<MutableList<NewsItem>> {
-//
-//        Log.d(tag, "레포 함수 실행")
-//
-//        val result = MutableLiveData<MutableList<NewsItem>>()
-//
-//        apiCall.enqueue(object : retrofit2.Callback<Rss> {
-//
-//            override fun onFailure(call: Call<Rss>, t: Throwable) {
-//                Log.e(tag, "에러 : ${t.message}")
-//                result.value = mutableListOf()
-//            }
-//
-//            override fun onResponse(call: Call<Rss>, response: Response<Rss>) {
-//                if(response.isSuccessful){
-//                    val itemList = response.body()?.channel?.newsItems
-//                    result.value = itemList
-//                    Log.d(tag, "데이터 성공 : ${result.value?.size}개")
-//                }
-//                else{
-//                    result.value = mutableListOf()
-//                    Log.d(tag, "데이터 실패 : ${result.value}")
-//                }
-//            }
-//        })
-//        //TODO : onResponse 를 안거치고 너무 빨리 반환하는 문제(이 때문에 ViewModel에서 null값만 받음.)
-//        Log.d(tag, "반환하기 전 레포 데이터 : ${result.value}")
-//        return result
-//    }
+        return result
+    }
 }

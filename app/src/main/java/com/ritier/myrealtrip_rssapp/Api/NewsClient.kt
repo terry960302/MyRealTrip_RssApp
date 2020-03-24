@@ -3,7 +3,7 @@
 package com.ritier.myrealtrip_rssapp.Api
 
 import android.content.Context
-import com.ritier.myrealtrip_rssapp.Util.checkNetwork
+import com.ritier.myrealtrip_rssapp.Util.hasNetwork
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import org.simpleframework.xml.convert.AnnotationStrategy
@@ -30,7 +30,7 @@ class NewsClient {
                     .addInterceptor { chain ->
                         var request = chain.request()
 
-                        request = if (checkNetwork(context))
+                        request = if (hasNetwork(context))
                         /*
                         *  If there is Internet, get the cache that was stored 5 seconds ago.
                         *  If the cache is older than 5 seconds, then discard it,

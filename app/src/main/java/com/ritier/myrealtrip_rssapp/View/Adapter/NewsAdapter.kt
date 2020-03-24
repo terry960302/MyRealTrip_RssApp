@@ -67,8 +67,8 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
         notifyDataSetChanged()
     }
 
-    fun addItem(newsListItem: NewsListItem){
-        items.add(newsListItem)
-        notifyItemChanged(items.size-1)
-    }
+//    fun addItem(newsListItem: NewsListItem){
+//        items.add(newsListItem)
+//        notifyItemChanged(items.size-1)
+//    }
 }

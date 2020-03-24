@@ -6,15 +6,22 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.ritier.myrealtrip_rssapp.model.NewsItem
 import com.ritier.myrealtrip_rssapp.model.NewsListItem
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.jsoup.Jsoup
+import kotlin.collections.MutableList
+import kotlin.collections.contains
+import kotlin.collections.forEach
+import kotlin.collections.hashMapOf
+import kotlin.collections.mapNotNull
+import kotlin.collections.mutableListOf
+import kotlin.collections.set
+import kotlin.collections.toMutableList
+import kotlin.collections.toSortedMap
 
-fun checkNetwork(context: Context): Boolean {
+fun hasNetwork(context: Context): Boolean {
     var isConnected = false
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -24,7 +31,6 @@ fun checkNetwork(context: Context): Boolean {
     return isConnected
 }
 
-//https://sourcediving.com/kotlin-coroutines-in-android-e2d5bb02c275
 suspend fun mappingModel(newsItem: NewsItem): NewsListItem = withContext(Dispatchers.IO) {
     try {
         val doc = Jsoup.connect(newsItem.link).ignoreHttpErrors(true)
@@ -43,7 +49,7 @@ suspend fun mappingModel(newsItem: NewsItem): NewsListItem = withContext(Dispatc
         )
     } catch (e: Exception) {
         e.printStackTrace()
-        return@withContext NewsListItem(null, "", "", "", mutableListOf())
+        return@withContext NewsListItem(null, "오류입니다.", "", "", mutableListOf())
     }
 }
 
@@ -87,6 +93,61 @@ object GlidePlaceHolder {
     }
 }
 
-fun <T> MutableLiveData<T>.notifyObserver() {
-    this.value = this.value
-}
+//fun <T> MutableLiveData<T>.notifyObserver() {
+//    this.postValue(this.value)
+//}
+//
+//suspend fun <A, B> Iterable<A>.pmap(f: suspend (A) -> B): MutableList<B> =
+//    withContext(Dispatchers.IO) {
+//        map { async { f(it) } }.awaitAll().toMutableList()
+//    }
+//
+//object BackgroundTransformations {
+//
+//    fun <X, Y> map(
+//        source: LiveData<X>,
+//        mapFunction: (X) -> Y
+//    ): LiveData<Y> {
+//        val result = MediatorLiveData<Y>()
+//
+//        result.addSource(source, Observer<X> { x ->
+//            if (x == null) return@Observer
+//            CoroutineScope(Dispatchers.Default).launch {
+//                result.postValue(mapFunction(x))
+//            }
+//        })
+//
+//        return result
+//    }
+//
+//    fun <X, Y> switchMap(
+//        source: LiveData<X>,
+//        switchMapFunction: (X) -> LiveData<Y>
+//    ): LiveData<Y> {
+//        val result = MediatorLiveData<Y>()
+//        result.addSource(source, object : Observer<X> {
+//            var mSource: LiveData<Y>? = null
+//
+//            override fun onChanged(x: X) {
+//                if (x == null) return
+//
+//                CoroutineScope(Dispatchers.Default).launch {
+//                    val newLiveData = switchMapFunction(x)
+//                    if (mSource == newLiveData) {
+//                        return@launch
+//                    }
+//                    if (mSource != null) {
+//                        result.removeSource(mSource!!)
+//                    }
+//                    mSource = newLiveData
+//                    if (mSource != null) {
+//                        result.addSource(mSource!!) { y ->
+//                            result.setValue(y)
+//                        }
+//                    }
+//                }
+//            }
+//        })
+//        return result
+//    }
+//}

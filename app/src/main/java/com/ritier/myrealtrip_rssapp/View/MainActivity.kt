@@ -4,26 +4,24 @@ package com.ritier.myrealtrip_rssapp.View
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ritier.myrealtrip_rssapp.R
-import com.ritier.myrealtrip_rssapp.Util.mappingModel
+import com.ritier.myrealtrip_rssapp.Repository.NewsRepository
 import com.ritier.myrealtrip_rssapp.View.Adapter.NewsAdapter
 import com.ritier.myrealtrip_rssapp.ViewModel.NewsViewModel
 import com.ritier.myrealtrip_rssapp.databinding.ActivityMainBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    val tag = "MainActivity"
+    private val tag = "MainActivity"
     private lateinit var newsAdapter: NewsAdapter
     private lateinit var dialog: ProgressDialog
     private val newsViewModel by viewModel<NewsViewModel>()
@@ -33,7 +31,8 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
 
-        setLoadingDialog()
+        //TODO : 메인에 키워드 리사이클러뷰 제작 + 화면 전환 시 상태 보존존
+       setLoadingDialog()
         initRecyclerView()
         setSwipeRefresh()
         getData()
@@ -49,7 +48,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setLoadingDialog() {
         dialog = ProgressDialog(this)
-        dialog.setMessage("뉴스를 불러오고 있습니다...")
+        dialog.setTitle("뉴스를 불러오는 중...")
+        dialog.setMessage("대략 10~20초가 걸릴 수 있습니다.")
         dialog.setCanceledOnTouchOutside(false)
     }
 
@@ -63,52 +63,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getData() {
-
-        //TODO : 화면 회전시 다시 불러오는 문제 해결 필요
-        newsViewModel.getNewsItems().observe(this, Observer {
-            dialog.show()
-            val job = Job()
-            val coroutineScope = CoroutineScope(Dispatchers.IO + job)
-            coroutineScope.launch {
-                it?.forEach {
-                    val item = mappingModel(it)
-                    runOnUiThread {
-                        newsAdapter.addItem(item)
-                    }
+        dialog.show()
+        newsViewModel.getNewsItems()
+            .observe(this, Observer {
+                if (it == null) {
+                    dialog.dismiss()
+                    Log.d(tag, "데이터가 없습니다.")
+                } else {
+                    newsAdapter.setItems(it)
+                    dialog.dismiss()
+                    binding.srlMain.isRefreshing = false
                 }
-                dialog.dismiss()
-                binding.srlMain.isRefreshing = false
-            }
-        })
-
-//        dialog.show()
-//
-//
-//        val api : NewsApi = get()
-//
-//        api.getNewsItems().enqueue(object : retrofit2.Callback<Rss>{
-//
-//            override fun onFailure(call: Call<Rss>, t: Throwable) {
-//                Log.e(tag, "에러  : ${t.message}")
-//            }
-//
-//            override fun onResponse(call: Call<Rss>, response: Response<Rss>) {
-//                val itemList = response.body()?.channel?.newsItems
-//
-//                val mainScope = CoroutineScope(Dispatchers.IO)
-//                mainScope.launch {
-//                    val result = itemList?.map {
-//                        mappingModel(it)
-//                    }?.toMutableList()
-//                    runOnUiThread {
-//                        newsAdapter.setItems(result!!)
-//                        dialog.dismiss()
-//                        binding.srlMain.isRefreshing = false
-//                    }
-//                }
-//            }
-//
-//        })
+            })
     }
 
 }
