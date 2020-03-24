@@ -10,9 +10,14 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ritier.myrealtrip_rssapp.R
+import com.ritier.myrealtrip_rssapp.Util.mappingModel
 import com.ritier.myrealtrip_rssapp.View.Adapter.NewsAdapter
 import com.ritier.myrealtrip_rssapp.ViewModel.NewsViewModel
 import com.ritier.myrealtrip_rssapp.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -61,8 +66,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getData() {
-        newsViewModel.getNewsItems()?.observe(this, Observer {
-            newsAdapter.setItems(it)
+        dialog.show()
+        val job = Job()
+        val mainScope = CoroutineScope(Dispatchers.IO + job)
+        newsViewModel.getNewsItems().observe(this, Observer {
+            mainScope.launch {
+                it?.forEach {
+                    val item = mappingModel(it)
+                    runOnUiThread {
+                        newsAdapter.addItem(item)
+                    }
+                }
+                dialog.dismiss()
+                binding.srlMain.isRefreshing = false
+            }
         })
 
 //        dialog.show()

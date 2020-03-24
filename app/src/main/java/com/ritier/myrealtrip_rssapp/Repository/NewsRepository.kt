@@ -1,25 +1,25 @@
 package com.ritier.myrealtrip_rssapp.Repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MutableLiveData
 import com.ritier.myrealtrip_rssapp.Api.NewsApi
 import com.ritier.myrealtrip_rssapp.model.NewsItem
 import io.reactivex.BackpressureStrategy
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class NewsRepository(newsApi: NewsApi) {
 
     val tag = "NewsRepository"
-    private val apiCall by lazy { newsApi.getNewsItems() }
-    private val result by lazy { MutableLiveData<MutableList<NewsItem>>() }
+    private val apiObservable by lazy { newsApi.getNewsItems() }
+//    private val result by lazy { MutableLiveData<MutableList<NewsItem>>() }
 
     fun getNewsItems(): LiveData<MutableList<NewsItem>?> =
-        LiveDataReactiveStreams.fromPublisher(apiCall.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-            .map { item -> item.channel?.newsItems }.toFlowable(BackpressureStrategy.LATEST))
+        LiveDataReactiveStreams.fromPublisher(apiObservable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .map { item -> item.channel?.newsItems }.toFlowable(BackpressureStrategy.LATEST)
+        )
 
 //    fun getNewsItems(): MutableLiveData<MutableList<NewsItem>> {
 //
