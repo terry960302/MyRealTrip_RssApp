@@ -16,6 +16,7 @@ class NewsRepository(newsApi: NewsApi) {
 
     val tag = "NewsRepository"
     private val newsItems by lazy { newsApi.getNewsItems() }
+    private lateinit var disposable : DisposableObserver<MutableList<NewsItem>>
 
     fun getNewsItems(): MutableLiveData<MutableList<NewsListItem>> {
 
@@ -37,10 +38,10 @@ class NewsRepository(newsApi: NewsApi) {
                                 .filter { item -> item != emptyErrorItem }
                                 .toMutableList())
                         }.onSuccess {
-                            Log.d(tag, "코루틴 파싱 성공")
+                            Log.d(tag, "코루틴 성공")
                             job.cancelAndJoin()
                         }.onFailure {
-                            Log.d(tag, "코루틴 파싱 실패 : ${it.message}")
+                            Log.d(tag, "코루틴 실패 : ${it.message}")
                             job.cancelAndJoin()
                         }
                     }
@@ -48,14 +49,19 @@ class NewsRepository(newsApi: NewsApi) {
 
                 override fun onError(e: Throwable) {
                     Log.e(tag, "뉴스 데이터 구독 실패 : ${e.message}")
+                    result.postValue(null)
                 }
 
             }
 
-        val disposable = newsItems.subscribeOn(Schedulers.io())
+        disposable = newsItems.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .map { item -> item.channel?.newsItems }.subscribeWith(observer)
 
         return result
+    }
+
+    fun onDispose(){
+        disposable.dispose()
     }
 }

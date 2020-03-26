@@ -1,11 +1,12 @@
 package com.ritier.myrealtrip_rssapp.View
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.net.http.SslError
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.webkit.*
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,6 +49,7 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun setWebView(item : NewsListItem){
         binding.wvDetail.apply {
             this.webViewClient = object : WebViewClient(){
@@ -70,10 +72,7 @@ class DetailActivity : AppCompatActivity() {
                     error: WebResourceError?
                 ) {
                     super.onReceivedError(view, request, error)
-                    view?.visibility = View.INVISIBLE
-                    binding.pgLoading.visibility = View.INVISIBLE
                     Log.e(DetailActivity.tag, "웹뷰 에러 : ${error.toString()}")
-//                    Toast.makeText(applicationContext, "페이지 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onReceivedHttpError(
@@ -83,6 +82,15 @@ class DetailActivity : AppCompatActivity() {
                 ) {
                     super.onReceivedHttpError(view, request, errorResponse)
                     Log.e(DetailActivity.tag, "웹뷰 http 에러 : ${errorResponse.toString()}")
+                }
+
+                override fun onReceivedSslError(
+                    view: WebView?,
+                    handler: SslErrorHandler?,
+                    error: SslError?
+                ) {
+                    super.onReceivedSslError(view, handler, error)
+                    Log.e(DetailActivity.tag, "웹뷰 SSL 에러 : ${error.toString()}")
                 }
             }
             this.webChromeClient = object : WebChromeClient(){

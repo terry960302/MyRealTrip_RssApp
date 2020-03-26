@@ -16,7 +16,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".View.DetailActivity"></activity>
+        <activity android:name=".View.DetailActivity"
+            android:configChanges="keyboardHidden|orientation"/>
         <activity android:name=".View.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +27,7 @@
         </activity>
         <activity android:name=".View.MainActivity"
             android:configChanges="keyboardHidden|orientation"/>
+
     </application>
 
 </manifest>

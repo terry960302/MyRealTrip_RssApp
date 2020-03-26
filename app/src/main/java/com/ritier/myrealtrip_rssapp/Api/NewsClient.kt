@@ -15,7 +15,6 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 class NewsClient {
 
     companion object{
-        //https://medium.com/@bapspatil/caching-with-retrofit-store-responses-offline-71439ed32fda
 
         private const val baseUrl = "https://news.google.com/"
 

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ritier.myrealtrip_rssapp.R
@@ -18,15 +19,16 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
     private var items = mutableListOf<NewsListItem>()
 
-    companion object{
+    companion object {
         @JvmStatic
         @BindingAdapter("imageUrl")
         fun loadImage(view: ImageView, url: String?) {
-            if(url == null){
+            if (url == null) {
                 Glide.with(view.context).load(R.drawable.no_image).into(view)
-            }else{
+            } else {
                 Glide.with(view.context).load(url).placeholder(
-                    GlidePlaceHolder.circularPlaceHolder(view.context)).error(R.drawable.ic_file).into(view)
+                    GlidePlaceHolder.circularPlaceHolder(view.context)
+                ).error(R.drawable.ic_file).into(view)
             }
         }
     }
@@ -36,6 +38,15 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
         fun bind(item: NewsListItem) {
             with(binding) {
                 this.newsListItem = item
+                val keywordsAdapter = KeywordAdapter()
+                keywordsAdapter.setItems(item.keywords)
+                this.rvKeywords.apply {
+                    this.layoutManager =
+                        LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
+                    this.setHasFixedSize(true)
+                    this.adapter = keywordsAdapter
+                }
+
                 this.executePendingBindings()
             }
         }
@@ -57,18 +68,13 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) =
         holder.bind(items[position])
 
-    fun clearItems(){
+    fun clearItems() {
         items.clear()
         notifyDataSetChanged()
     }
 
-    fun setItems(itemList : MutableList<NewsListItem>){
+    fun setItems(itemList: MutableList<NewsListItem>) {
         items = itemList
         notifyDataSetChanged()
     }
-
-//    fun addItem(newsListItem: NewsListItem){
-//        items.add(newsListItem)
-//        notifyItemChanged(items.size-1)
-//    }
 }
