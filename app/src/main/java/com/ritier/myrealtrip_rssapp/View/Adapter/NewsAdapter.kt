@@ -13,8 +13,6 @@ import com.ritier.myrealtrip_rssapp.Util.GlidePlaceHolder
 import com.ritier.myrealtrip_rssapp.databinding.ActivityMainItemBinding
 import com.ritier.myrealtrip_rssapp.model.NewsListItem
 
-
-//https://codechacha.com/ko/android-jetpack-databinding/
 class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
     private var items = mutableListOf<NewsListItem>()

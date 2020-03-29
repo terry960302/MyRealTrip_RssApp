@@ -4,6 +4,7 @@ package com.ritier.myrealtrip_rssapp.View
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import com.ritier.myrealtrip_rssapp.View.Adapter.NewsAdapter
 import com.ritier.myrealtrip_rssapp.ViewModel.NewsViewModel
 import com.ritier.myrealtrip_rssapp.databinding.ActivityMainBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.system.measureTimeMillis
 
 class MainActivity : AppCompatActivity() {
 

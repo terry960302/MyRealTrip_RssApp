@@ -20,6 +20,8 @@ class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
     private lateinit var keywordAdapter: KeywordAdapter
+    private lateinit var item : NewsListItem
+
     companion object{
         const val tag = "DetailActivity"
     }
@@ -28,16 +30,19 @@ class DetailActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
         binding.lifecycleOwner = this
 
+        getIntentData()
+        initRecyclerView(item.keywords)
+        setWebView(item)
+    }
+
+    private fun getIntentData(){
         val intent = intent
-        val item = intent.extras?.getParcelable<NewsListItem>("newsListItem") as NewsListItem
+        item = intent.extras?.getParcelable<NewsListItem>("newsListItem") as NewsListItem
 
         if(item == NewsListItem(null, "", "", "", mutableListOf())){
             binding.tvTitle.text = "오류입니다."
         }
-
-        initRecyclerView(item.keywords)
         binding.tvTitle.text = item.title
-        setWebView(item)
     }
 
     private fun initRecyclerView(list : MutableList<String>){
@@ -65,7 +70,6 @@ class DetailActivity : AppCompatActivity() {
                     binding.pgLoading.visibility = View.INVISIBLE
                 }
 
-                //TODO : 웹뷰 에러 핸들링 더 철저하게
                 override fun onReceivedError(
                     view: WebView?,
                     request: WebResourceRequest?,

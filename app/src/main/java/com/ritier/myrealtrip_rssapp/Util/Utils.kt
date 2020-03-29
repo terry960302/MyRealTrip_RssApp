@@ -53,6 +53,7 @@ suspend fun mappingModel(newsItem: NewsItem): NewsListItem = withContext(Dispatc
     }
 }
 
+//키워드 분류 알고리즘 함수 2개
 private fun stringSort(word: String): String? {
     val re = Regex("[^가-힣^A-Za-z0-9 ]")
     val result = re.replace(word, "")
@@ -92,62 +93,3 @@ object GlidePlaceHolder {
         return circularProgressDrawable
     }
 }
-
-//fun <T> MutableLiveData<T>.notifyObserver() {
-//    this.postValue(this.value)
-//}
-//
-//suspend fun <A, B> Iterable<A>.pmap(f: suspend (A) -> B): MutableList<B> =
-//    withContext(Dispatchers.IO) {
-//        map { async { f(it) } }.awaitAll().toMutableList()
-//    }
-//
-//object BackgroundTransformations {
-//
-//    fun <X, Y> map(
-//        source: LiveData<X>,
-//        mapFunction: (X) -> Y
-//    ): LiveData<Y> {
-//        val result = MediatorLiveData<Y>()
-//
-//        result.addSource(source, Observer<X> { x ->
-//            if (x == null) return@Observer
-//            CoroutineScope(Dispatchers.Default).launch {
-//                result.postValue(mapFunction(x))
-//            }
-//        })
-//
-//        return result
-//    }
-//
-//    fun <X, Y> switchMap(
-//        source: LiveData<X>,
-//        switchMapFunction: (X) -> LiveData<Y>
-//    ): LiveData<Y> {
-//        val result = MediatorLiveData<Y>()
-//        result.addSource(source, object : Observer<X> {
-//            var mSource: LiveData<Y>? = null
-//
-//            override fun onChanged(x: X) {
-//                if (x == null) return
-//
-//                CoroutineScope(Dispatchers.Default).launch {
-//                    val newLiveData = switchMapFunction(x)
-//                    if (mSource == newLiveData) {
-//                        return@launch
-//                    }
-//                    if (mSource != null) {
-//                        result.removeSource(mSource!!)
-//                    }
-//                    mSource = newLiveData
-//                    if (mSource != null) {
-//                        result.addSource(mSource!!) { y ->
-//                            result.setValue(y)
-//                        }
-//                    }
-//                }
-//            }
-//        })
-//        return result
-//    }
-//}
