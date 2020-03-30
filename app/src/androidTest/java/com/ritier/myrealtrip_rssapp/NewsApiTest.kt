@@ -3,43 +3,37 @@ package com.ritier.myrealtrip_rssapp
 import androidx.test.platform.app.InstrumentationRegistry
 import com.ritier.myrealtrip_rssapp.Api.NewsClient
 import com.ritier.myrealtrip_rssapp.model.Rss
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Call
-import retrofit2.Response
 
-class NewsApiTest  {
+class NewsApiTest {
 
-    private lateinit var api : Call<Rss>
+    private lateinit var api: Observable<Rss>
     private val mockContext = InstrumentationRegistry.getInstrumentation().targetContext
+    var isExist = false
 
     @Before
-    fun setting(){
+    fun setting() {
         api = NewsClient.getInstance(
             mockContext
         ).getNewsItems()
     }
 
     @Test
-    fun getItems(){
+    fun getItems() {
 
-        api.enqueue(object: retrofit2.Callback<Rss>{
-            override fun onFailure(call: Call<Rss>, t: Throwable) {
-                print("에러입니다. : ${t.message}")
+        api.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe {
+            val data = it.channel?.newsItems
+
+            if (data != null) {
+                isExist = true
             }
 
-            override fun onResponse(call: Call<Rss>, response: Response<Rss>) {
-                val body = response.body()
-
-                if(body != null){
-                    val channel = body.channel
-                    if(channel != null){
-                        println("결과 : ${channel.newsItems}")
-                    }
-                }
-
-            }
-
-        })
+            assertEquals(isExist, true)
+        }
     }
 }

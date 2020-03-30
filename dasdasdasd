@@ -1,0 +1,212 @@
+[33mcommit 447326ebebfd1f8d8660c044346030dc965f4552[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;33mtag: v1.0.0[m[33m, [m[1;33mtag: 1.0.0[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Taewan Kim <terry960302@gmail.com>
+Date:   Mon Mar 30 01:25:02 2020 +0900
+
+    remove : no need
+
+[1mdiff --git a/app/src/main/java/com/ritier/myrealtrip_rssapp/Api/NewsClient.kt b/app/src/main/java/com/ritier/myrealtrip_rssapp/Api/NewsClient.kt[m
+[1mindex c7e1662..ef36ade 100644[m
+[1m--- a/app/src/main/java/com/ritier/myrealtrip_rssapp/Api/NewsClient.kt[m
+[1m+++ b/app/src/main/java/com/ritier/myrealtrip_rssapp/Api/NewsClient.kt[m
+[36m@@ -14,11 +14,11 @@[m [mimport retrofit2.converter.simplexml.SimpleXmlConverterFactory[m
+ [m
+ class NewsClient {[m
+ [m
+[31m-    companion object{[m
+[32m+[m[32m    companion object {[m
+ [m
+         private const val baseUrl = "https://news.google.com/"[m
+ [m
+[31m-        fun getInstance(context : Context): NewsApi {[m
+[32m+[m[32m        fun getInstance(context: Context): NewsApi {[m
+ [m
+             val cacheSize = (5 * 1024 * 1024).toLong()[m
+             val myCache = Cache(context.cacheDir, cacheSize)[m
+[36m@@ -28,24 +28,14 @@[m [mclass NewsClient {[m
+                     .cache(myCache)[m
+                     .addInterceptor { chain ->[m
+                         var request = chain.request()[m
+[31m-[m
+                         request = if (hasNetwork(context))[m
+[31m-                        /*[m
+[31m-                        *  If there is Internet, get the cache that was stored 5 seconds ago.[m
+[31m-                        *  If the cache is older than 5 seconds, then discard it,[m
+[31m-                        *  and indicate an error in fetching the response.[m
+[31m-                        *  The 'max-age' attribute is responsible for this behavior.[m
+[31m-                        */[m
+[31m-                            request.newBuilder().header("Cache-Control", "public, max-age=" + 5).build()[m
+[32m+[m[32m                            request.newBuilder().header("Cache-Control", "public, max-age=" + 5)[m
+[32m+[m[32m                                .build()[m
+                         else[m
+[31m-                        /*[m
+[31m-                        *  If there is no Internet, get the cache that was stored 7 days ago.[m
+[31m-                        *  If the cache is older than 7 days, then discard it,[m
+[31m-                        *  and indicate an error in fetching the response.[m
+[31m-                        *  The 'max-stale' attribute is responsible for this behavior.[m
+[31m-                        *  The 'only-if-cached' attribute indicates to not retrieve new data; fetch the cache only instead.[m
+[31m-                        */[m
+[31m-                            request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7).build()[m
+[32m+[m[32m                            request.newBuilder().header([m
+[32m+[m[32m                                "Cache-Control",[m
+[32m+[m[32m                                "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7[m
+[32m+[m[32m                            ).build()[m
+                         chain.proceed(request)[m
+                     }[m
+                     .build()[m
+[1mdiff --git a/app/src/main/java/com/ritier/myrealtrip_rssapp/Util/Utils.kt b/app/src/main/java/com/ritier/myrealtrip_rssapp/Util/Utils.kt[m
+[1mindex 4d3fae7..b154c32 100644[m
+[1m--- a/app/src/main/java/com/ritier/myrealtrip_rssapp/Util/Utils.kt[m
+[1m+++ b/app/src/main/java/com/ritier/myrealtrip_rssapp/Util/Utils.kt[m
+[36m@@ -53,6 +53,7 @@[m [msuspend fun mappingModel(newsItem: NewsItem): NewsListItem = withContext(Dispatc[m
+     }[m
+ }[m
+ [m
+[32m+[m[32m//키워드 분류 알고리즘 함수 2개[m
+ private fun stringSort(word: String): String? {[m
+     val re = Regex("[^가-힣^A-Za-z0-9 ]")[m
+     val result = re.replace(word, "")[m
+[36m@@ -91,63 +92,4 @@[m [mobject GlidePlaceHolder {[m
+         circularProgressDrawable.start()[m
+         return circularProgressDrawable[m
+     }[m
+[31m-}[m
+[31m-[m
+[31m-//fun <T> MutableLiveData<T>.notifyObserver() {[m
+[31m-//    this.postValue(this.value)[m
+[31m-//}[m
+[31m-//[m
+[31m-//suspend fun <A, B> Iterable<A>.pmap(f: suspend (A) -> B): MutableList<B> =[m
+[31m-//    withContext(Dispatchers.IO) {[m
+[31m-//        map { async { f(it) } }.awaitAll().toMutableList()[m
+[31m-//    }[m
+[31m-//[m
+[31m-//object BackgroundTransformations {[m
+[31m-//[m
+[31m-//    fun <X, Y> map([m
+[31m-//        source: LiveData<X>,[m
+[31m-//        mapFunction: (X) -> Y[m
+[31m-//    ): LiveData<Y> {[m
+[31m-//        val result = MediatorLiveData<Y>()[m
+[31m-//[m
+[31m-//        result.addSource(source, Observer<X> { x ->[m
+[31m-//            if (x == null) return@Observer[m
+[31m-//            CoroutineScope(Dispatchers.Default).launch {[m
+[31m-//                result.postValue(mapFunction(x))[m
+[31m-//            }[m
+[31m-//        })[m
+[31m-//[m
+[31m-//        return result[m
+[31m-//    }[m
+[31m-//[m
+[31m-//    fun <X, Y> switchMap([m
+[31m-//        source: LiveData<X>,[m
+[31m-//        switchMapFunction: (X) -> LiveData<Y>[m
+[31m-//    ): LiveData<Y> {[m
+[31m-//        val result = MediatorLiveData<Y>()[m
+[31m-//        result.addSource(source, object : Observer<X> {[m
+[31m-//            var mSource: LiveData<Y>? = null[m
+[31m-//[m
+[31m-//            override fun onChanged(x: X) {[m
+[31m-//                if (x == null) return[m
+[31m-//[m
+[31m-//                CoroutineScope(Dispatchers.Default).launch {[m
+[31m-//                    val newLiveData = switchMapFunction(x)[m
+[31m-//                    if (mSource == newLiveData) {[m
+[31m-//                        return@launch[m
+[31m-//                    }[m
+[31m-//                    if (mSource != null) {[m
+[31m-//                        result.removeSource(mSource!!)[m
+[31m-//                    }[m
+[31m-//                    mSource = newLiveData[m
+[31m-//                    if (mSource != null) {[m
+[31m-//                        result.addSource(mSource!!) { y ->[m
+[31m-//                            result.setValue(y)[m
+[31m-//                        }[m
+[31m-//                    }[m
+[31m-//                }[m
+[31m-//            }[m
+[31m-//        })[m
+[31m-//        return result[m
+[31m-//    }[m
+[31m-//}[m
+\ No newline at end of file[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/app/src/main/java/com/ritier/myrealtrip_rssapp/View/Adapter/NewsAdapter.kt b/app/src/main/java/com/ritier/myrealtrip_rssapp/View/Adapter/NewsAdapter.kt[m
+[1mindex 5239af9..62f04b6 100644[m
+[1m--- a/app/src/main/java/com/ritier/myrealtrip_rssapp/View/Adapter/NewsAdapter.kt[m
+[1m+++ b/app/src/main/java/com/ritier/myrealtrip_rssapp/View/Adapter/NewsAdapter.kt[m
+[36m@@ -13,8 +13,6 @@[m [mimport com.ritier.myrealtrip_rssapp.Util.GlidePlaceHolder[m
+ import com.ritier.myrealtrip_rssapp.databinding.ActivityMainItemBinding[m
+ import com.ritier.myrealtrip_rssapp.model.NewsListItem[m
+ [m
+[31m-[m
+[31m-//https://codechacha.com/ko/android-jetpack-databinding/[m
+ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {[m
+ [m
+     private var items = mutableListOf<NewsListItem>()[m
+[1mdiff --git a/app/src/main/java/com/ritier/myrealtrip_rssapp/View/DetailActivity.kt b/app/src/main/java/com/ritier/myrealtrip_rssapp/View/DetailActivity.kt[m
+[1mindex 4952aa8..60d3984 100644[m
+[1m--- a/app/src/main/java/com/ritier/myrealtrip_rssapp/View/DetailActivity.kt[m
+[1m+++ b/app/src/main/java/com/ritier/myrealtrip_rssapp/View/DetailActivity.kt[m
+[36m@@ -20,6 +20,8 @@[m [mclass DetailActivity : AppCompatActivity() {[m
+ [m
+     private lateinit var binding: ActivityDetailBinding[m
+     private lateinit var keywordAdapter: KeywordAdapter[m
+[32m+[m[32m    private lateinit var item : NewsListItem[m
+[32m+[m
+     companion object{[m
+         const val tag = "DetailActivity"[m
+     }[m
+[36m@@ -28,16 +30,19 @@[m [mclass DetailActivity : AppCompatActivity() {[m
+         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail)[m
+         binding.lifecycleOwner = this[m
+ [m
+[32m+[m[32m        getIntentData()[m
+[32m+[m[32m        initRecyclerView(item.keywords)[m
+[32m+[m[32m        setWebView(item)[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    private fun getIntentData(){[m
+         val intent = intent[m
+[31m-        val item = intent.extras?.getParcelable<NewsListItem>("newsListItem") as NewsListItem[m
+[32m+[m[32m        item = intent.extras?.getParcelable<NewsListItem>("newsListItem") as NewsListItem[m
+ [m
+         if(item == NewsListItem(null, "", "", "", mutableListOf())){[m
+             binding.tvTitle.text = "오류입니다."[m
+         }[m
+[31m-[m
+[31m-        initRecyclerView(item.keywords)[m
+         binding.tvTitle.text = item.title[m
+[31m-        setWebView(item)[m
+     }[m
+ [m
+     private fun initRecyclerView(list : MutableList<String>){[m
+[36m@@ -65,7 +70,6 @@[m [mclass DetailActivity : AppCompatActivity() {[m
+                     binding.pgLoading.visibility = View.INVISIBLE[m
+                 }[m
+ [m
+[31m-                //TODO : 웹뷰 에러 핸들링 더 철저하게[m
+                 override fun onReceivedError([m
+                     view: WebView?,[m
+                     request: WebResourceRequest?,[m
+[1mdiff --git a/app/src/main/java/com/ritier/myrealtrip_rssapp/View/MainActivity.kt b/app/src/main/java/com/ritier/myrealtrip_rssapp/View/MainActivity.kt[m
+[1mindex e475a2c..b98dfc4 100644[m
+[1m--- a/app/src/main/java/com/ritier/myrealtrip_rssapp/View/MainActivity.kt[m
+[1m+++ b/app/src/main/java/com/ritier/myrealtrip_rssapp/View/MainActivity.kt[m
+[36m@@ -4,6 +4,7 @@[m [mpackage com.ritier.myrealtrip_rssapp.View[m
+ [m
+ import android.app.ProgressDialog[m
+ import android.os.Bundle[m
+[32m+[m[32mimport android.os.SystemClock[m
+ import android.util.Log[m
+ import android.widget.Toast[m
+ import androidx.appcompat.app.AppCompatActivity[m
+[36m@@ -16,6 +17,7 @@[m [mimport com.ritier.myrealtrip_rssapp.View.Adapter.NewsAdapter[m
+ import com.ritier.myrealtrip_rssapp.ViewModel.NewsViewModel[m
+ import com.ritier.myrealtrip_rssapp.databinding.ActivityMainBinding[m
+ import org.koin.androidx.viewmodel.ext.android.viewModel[m
+[32m+[m[32mimport kotlin.system.measureTimeMillis[m
+ [m
+ class MainActivity : AppCompatActivity() {[m
+ [m

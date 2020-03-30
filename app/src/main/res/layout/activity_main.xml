@@ -30,14 +30,14 @@
                 android:id="@+id/textView6"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:text="@string/title"
                 android:paddingStart="24dp"
-                android:paddingEnd="0dp"
                 android:paddingTop="16dp"
+                android:paddingEnd="0dp"
                 android:paddingBottom="16dp"
+                android:text="@string/title"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -46,10 +46,32 @@
                 android:id="@+id/view2"
                 android:layout_width="70dp"
                 android:layout_height="3dp"
-                android:background="@color/white"
                 android:layout_marginStart="24dp"
+                android:background="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_wrapLottie"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="32dp"
+                android:elevation="10dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="75dp"
+                app:cardElevation="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/rv_main"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/rv_main">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lv_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    app:lottie_autoPlay="true" />
+            </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

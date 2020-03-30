@@ -2,10 +2,9 @@
 
 package com.ritier.myrealtrip_rssapp.View
 
-import android.app.ProgressDialog
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -17,14 +16,12 @@ import com.ritier.myrealtrip_rssapp.View.Adapter.NewsAdapter
 import com.ritier.myrealtrip_rssapp.ViewModel.NewsViewModel
 import com.ritier.myrealtrip_rssapp.databinding.ActivityMainBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.system.measureTimeMillis
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val tag = "MainActivity"
     private lateinit var newsAdapter: NewsAdapter
-    private lateinit var dialog: ProgressDialog
     private val newsViewModel by viewModel<NewsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
 
-        setLoadingDialog()
+        setLottieLoading()
         initRecyclerView()
         setSwipeRefresh()
         getNewsData()
@@ -40,17 +37,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun setSwipeRefresh() {
         binding.srlMain.setOnRefreshListener {
-            dialog.show()
             newsAdapter.clearItems()
             getNewsData()
         }
     }
 
-    private fun setLoadingDialog() {
-        dialog = ProgressDialog(this)
-        dialog.setTitle("뉴스를 불러오는 중...")
-        dialog.setMessage("대략 10~20초가 걸릴 수 있습니다.")
-        dialog.setCanceledOnTouchOutside(false)
+    private fun setLottieLoading(){
+        binding.lvLoading.apply{
+            this.setAnimation("newspaper_spinner.json")
+            this.playAnimation()
+            this.loop(true)
+        }
     }
 
     private fun initRecyclerView() {
@@ -64,18 +61,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getNewsData() {
-        dialog.show()
+        binding.cvWrapLottie.visibility = View.VISIBLE
         newsViewModel.getNewsItems()
             .observe(this, Observer {
                 if (it == null) {
-                    dialog.dismiss()
+                    binding.cvWrapLottie.visibility = View.GONE
                     binding.srlMain.isRefreshing = false
                     Log.d(tag, "데이터가 없습니다.")
                     Toast.makeText(applicationContext, "네트워크 상태를 확인해주십시오.", Toast.LENGTH_SHORT)
                         .show()
                 } else {
                     newsAdapter.setItems(it)
-                    dialog.dismiss()
+                    binding.cvWrapLottie.visibility = View.GONE
                     binding.srlMain.isRefreshing = false
                 }
             })
