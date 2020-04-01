@@ -9,17 +9,11 @@ import android.util.Log
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.ritier.myrealtrip_rssapp.model.NewsItem
 import com.ritier.myrealtrip_rssapp.model.NewsListItem
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
-import kotlin.collections.MutableList
-import kotlin.collections.contains
-import kotlin.collections.forEach
-import kotlin.collections.hashMapOf
-import kotlin.collections.mapNotNull
-import kotlin.collections.mutableListOf
 import kotlin.collections.set
-import kotlin.collections.toMutableList
-import kotlin.collections.toSortedMap
+
 
 fun hasNetwork(context: Context): Boolean {
     var isConnected = false
@@ -36,6 +30,7 @@ suspend fun mappingModel(newsItem: NewsItem): NewsListItem = withContext(Dispatc
         val doc = Jsoup.connect(newsItem.link).ignoreHttpErrors(true)
             .execute().header("Connection", "close")
             .parse()
+
         val imagePath = doc.select("meta[property=og:image]").attr("content")
         val allDesc = doc.select("meta[property=og:description]").attr("content")
         val keywordList = extractKeywords(allDesc)

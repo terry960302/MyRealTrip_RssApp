@@ -61,21 +61,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getNewsData() {
-        binding.cvWrapLottie.visibility = View.VISIBLE
+        binding.clLoad.visibility = View.VISIBLE
         newsViewModel.getNewsItems()
             .observe(this, Observer {
                 if (it == null) {
-                    binding.cvWrapLottie.visibility = View.GONE
+                    binding.clLoad.visibility = View.GONE
                     binding.srlMain.isRefreshing = false
                     Log.d(tag, "데이터가 없습니다.")
                     Toast.makeText(applicationContext, "네트워크 상태를 확인해주십시오.", Toast.LENGTH_SHORT)
                         .show()
                 } else {
                     newsAdapter.setItems(it)
-                    binding.cvWrapLottie.visibility = View.GONE
+                    binding.clLoad.visibility = View.GONE
                     binding.srlMain.isRefreshing = false
                 }
             })
+        newsViewModel.getLoadState().observe(this, Observer { isLoading ->
+            if (isLoading){
+                binding.tvState.text = resources.getString(R.string.detailLoad)
+            }else{
+                binding.tvState.text = resources.getString(R.string.mainLoad)
+            }
+        })
     }
 
 }

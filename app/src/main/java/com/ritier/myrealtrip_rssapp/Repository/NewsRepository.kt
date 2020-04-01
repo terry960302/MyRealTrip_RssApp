@@ -16,7 +16,10 @@ class NewsRepository(newsApi: NewsApi) {
 
     val tag = "NewsRepository"
     private val newsItems by lazy { newsApi.getNewsItems() }
-    private lateinit var disposable : DisposableObserver<MutableList<NewsItem>>
+    private lateinit var disposable: DisposableObserver<MutableList<NewsItem>>
+    private val _loadState: MutableLiveData<Boolean> by lazy { MutableLiveData(false) }
+    val loadState: MutableLiveData<Boolean>
+        get() = _loadState
 
     fun getNewsItems(): MutableLiveData<MutableList<NewsListItem>> {
 
@@ -27,6 +30,7 @@ class NewsRepository(newsApi: NewsApi) {
             object : DisposableObserver<MutableList<NewsItem>>() {
                 override fun onComplete() {
                     Log.d(tag, "뉴스 데이터 구독 완료")
+                    _loadState.postValue(true)
                 }
 
                 override fun onNext(itemList: MutableList<NewsItem>) {
@@ -61,7 +65,7 @@ class NewsRepository(newsApi: NewsApi) {
         return result
     }
 
-    fun onDispose(){
+    fun onDispose() {
         disposable.dispose()
     }
 }

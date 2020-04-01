@@ -51,27 +51,50 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_wrapLottie"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_marginBottom="32dp"
-                android:elevation="10dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="75dp"
-                app:cardElevation="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/rv_main"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_load"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="64dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/rv_main"
                 app:layout_constraintTop_toTopOf="@+id/rv_main">
 
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/lv_loading"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    app:lottie_autoPlay="true" />
-            </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_wrapLottie"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:elevation="10dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="75dp"
+                    app:cardElevation="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lv_loading"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        app:lottie_autoPlay="true" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/tv_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/cv_wrapLottie"
+                    app:layout_constraintStart_toStartOf="@+id/cv_wrapLottie"
+                    app:layout_constraintTop_toBottomOf="@+id/cv_wrapLottie" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

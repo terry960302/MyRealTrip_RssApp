@@ -4,4 +4,6 @@
     <string name="version_name">v1.0</string>
     <string name="main_keyword">주요 키워드</string>
     <string name="title">오늘의 뉴스</string>
+    <string name="detailLoad">"디테일한 내용을 가져오는\n중입니다. 10~20초 정도\n소요될 수 있습니다."</string>
+    <string name="mainLoad">"뉴스 전체 목록을\n가져오는 중입니다."</string>
 </resources>

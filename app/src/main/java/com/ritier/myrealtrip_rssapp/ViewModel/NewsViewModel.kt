@@ -9,6 +9,8 @@ class NewsViewModel(private val newsRepo: NewsRepository) : ViewModel() {
 
     fun getNewsItems(): MutableLiveData<MutableList<NewsListItem>> = newsRepo.getNewsItems()
 
+    fun getLoadState() : MutableLiveData<Boolean> = newsRepo.loadState
+
     override fun onCleared() {
         newsRepo.onDispose()
         super.onCleared()
