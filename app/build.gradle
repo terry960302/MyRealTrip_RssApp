@@ -44,9 +44,6 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
-    //Mockito
-    testImplementation 'org.mockito:mockito-core:2.22.0'
-
     //JetPack
     def lifecycle_version = "2.2.0"
     def arch_version = "2.1.0"
@@ -86,10 +83,10 @@ dependencies {
     //Jsoup => https://jsoup.org/download
     implementation 'org.jsoup:jsoup:1.13.1'
 
-    //Rxjava
+    //Rxjava => https://github.com/ReactiveX/RxJava
     implementation "io.reactivex.rxjava2:rxjava:2.2.0"
     implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
 
-    //lottie
+    //lottie => https://github.com/airbnb/lottie-android
     implementation 'com.airbnb.android:lottie:3.4.0'
 }

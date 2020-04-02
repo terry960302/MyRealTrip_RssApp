@@ -44,7 +44,6 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
                     this.setHasFixedSize(true)
                     this.adapter = keywordsAdapter
                 }
-
                 this.executePendingBindings()
             }
         }

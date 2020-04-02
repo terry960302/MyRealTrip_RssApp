@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getNewsData() {
         binding.clLoad.visibility = View.VISIBLE
+
         newsViewModel.getNewsItems()
             .observe(this, Observer {
                 if (it == null) {
@@ -76,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                     binding.srlMain.isRefreshing = false
                 }
             })
+
         newsViewModel.getLoadState().observe(this, Observer { isLoading ->
             if (isLoading){
                 binding.tvState.text = resources.getString(R.string.detailLoad)

@@ -41,8 +41,9 @@ class DetailActivity : AppCompatActivity() {
 
         if(item == NewsListItem(null, "", "", "", mutableListOf())){
             binding.tvTitle.text = "오류입니다."
+        }else{
+            binding.tvTitle.text = item.title
         }
-        binding.tvTitle.text = item.title
     }
 
     private fun initRecyclerView(list : MutableList<String>){

@@ -27,7 +27,7 @@ fun hasNetwork(context: Context): Boolean {
 
 suspend fun mappingModel(newsItem: NewsItem): NewsListItem = withContext(Dispatchers.IO) {
     try {
-        val doc = Jsoup.connect(newsItem.link).ignoreHttpErrors(true)
+        val doc = Jsoup.connect(newsItem.link).ignoreHttpErrors(true).timeout(3000)
             .execute().header("Connection", "close")
             .parse()
 
